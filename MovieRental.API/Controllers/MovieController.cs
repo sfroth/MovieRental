@@ -1,4 +1,5 @@
 ﻿using MovieRental.Business.Service;
+using MovieRental.Business.Service.Interface;
 using MovieRental.Entities;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,13 @@ namespace MovieRental.API.Controllers
 {
     public class MovieController : ApiController
     {
+		private readonly IMovieService _movieService;
+
+		public MovieController(IMovieService movieService)
+		{
+			_movieService = movieService;
+		}
+
 		/// <summary>
 		/// Search for movies by search params (simple term, or advanced search)
 		/// </summary>
@@ -33,7 +41,8 @@ namespace MovieRental.API.Controllers
 		public IHttpActionResult GetMovie(int id)
 		{
 			// get movie by id
-			return Ok((new MovieService(new DataContext())).Get(id));
+			var movie = _movieService.Get(id);
+			return Ok(movie);
 		}
 
 		/// <summary>

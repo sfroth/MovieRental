@@ -1,4 +1,5 @@
-﻿using MovieRental.Entities;
+﻿using MovieRental.Business.Service.Interface;
+using MovieRental.Entities;
 using MovieRental.Entities.Models;
 using System;
 using System.Collections.Generic;
@@ -8,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace MovieRental.Business.Service
 {
-	public class MovieService
+	public class MovieService : IMovieService
 	{
-		private readonly DataContext _context;
+		private readonly IDataContext _context;
 
-		public MovieService(DataContext context)
+		public MovieService(IDataContext context)
 		{
 			_context = context;
 		}

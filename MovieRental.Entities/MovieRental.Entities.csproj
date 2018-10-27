@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataContext.cs" />
+    <Compile Include="IDataContext.cs" />
     <Compile Include="Models\Account.cs" />
     <Compile Include="Models\AccountMovie.cs" />
     <Compile Include="Models\Address.cs" />

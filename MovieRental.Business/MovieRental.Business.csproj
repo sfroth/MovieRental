@@ -93,6 +93,7 @@
     <Compile Include="Service\Interface\ICacheService.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\Interface\IMovieService.cs" />
     <Compile Include="Service\MovieService.cs" />
   </ItemGroup>
   <ItemGroup>

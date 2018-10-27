@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MovieRental.Entities
 {
-	public class DataContext : DbContext
+	public class DataContext : DbContext, IDataContext
 	{
 		public DataContext() : base("MovieRentalDb")
 		{
