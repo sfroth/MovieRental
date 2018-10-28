@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Autofac.Integration.Mvc;
 using Autofac.Integration.WebApi;
+using MovieRental.API.Providers;
 using MovieRental.Business.Service;
 using MovieRental.Business.Service.Interface;
 using MovieRental.Entities;
@@ -22,9 +23,11 @@ namespace MovieRental.API
 
 			builder.RegisterControllers(Assembly.GetExecutingAssembly());
 			builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
+			builder.RegisterType<AuthorizationServerProvider>();
 
 			builder.RegisterType<DataContext>().As<IDataContext>().InstancePerRequest();
 			builder.RegisterType<MovieService>().As<IMovieService>();
+			builder.RegisterType<AccountService>().As<IAccountService>();
 
 			var container = builder.Build();
 			GlobalConfiguration.Configuration.DependencyResolver = new AutofacWebApiDependencyResolver(container);

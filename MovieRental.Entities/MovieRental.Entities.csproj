@@ -49,6 +49,15 @@
   <ItemGroup>
     <Compile Include="DataContext.cs" />
     <Compile Include="IDataContext.cs" />
+    <Compile Include="Migrations\201810272353100_InitialCreate.cs" />
+    <Compile Include="Migrations\201810272353100_InitialCreate.Designer.cs">
+      <DependentUpon>201810272353100_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201810281703538_Auth.cs" />
+    <Compile Include="Migrations\201810281703538_Auth.Designer.cs">
+      <DependentUpon>201810281703538_Auth.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Account.cs" />
     <Compile Include="Models\AccountMovie.cs" />
     <Compile Include="Models\Address.cs" />
@@ -60,6 +69,14 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201810272353100_InitialCreate.resx">
+      <DependentUpon>201810272353100_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201810281703538_Auth.resx">
+      <DependentUpon>201810281703538_Auth.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

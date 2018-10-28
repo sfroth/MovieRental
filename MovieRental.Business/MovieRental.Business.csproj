@@ -89,7 +89,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Service\AccountService.cs" />
     <Compile Include="Service\CacheService.cs" />
+    <Compile Include="Service\Interface\IAccountService.cs" />
     <Compile Include="Service\Interface\ICacheService.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
