@@ -25,5 +25,17 @@ namespace MovieRental.Business.Service.Interface
 		/// <param name="username"></param>
 		/// <returns></returns>
 		Account Get(string username);
+
+		/// <summary>
+		/// Save (create or update) user account
+		/// </summary>
+		/// <param name="account"></param>
+		void Save(Account account);
+
+		/// <summary>
+		/// Set account active to false
+		/// </summary>
+		/// <param name="id"></param>
+		void Deactivate(int id);
 	}
 }

@@ -1,4 +1,6 @@
-﻿using log4net;
+﻿using AutoMapper;
+using log4net;
+using MovieRental.API.Models;
 using MovieRental.Business.Service.Interface;
 using MovieRental.Entities.Models;
 using System;
@@ -16,9 +18,40 @@ namespace MovieRental.API.Controllers
 		private readonly IAccountService _accountService;
 		private readonly ILog _log = LogManager.GetLogger("MovieRental");
 
+		private Account _currentUser;
+		private Account CurrentUser
+		{
+			get
+			{
+				if (_currentUser == null)
+				{
+					_currentUser = _accountService.Get(User.Identity.Name);
+				}
+				return _currentUser;
+			}
+		}
+
 		public AccountController(IAccountService accountService)
 		{
 			_accountService = accountService;
+		}
+
+		private Account GetAccountByIdOrCurrent(int? id)
+		{
+			// if id is passed in, verify user has access to that id
+			// if id is not passed in, use logged in user
+			if (id.HasValue)
+			{
+				if (CurrentUser.Role == Account.AccountRole.User)
+				{
+					throw new SecurityException("Not authorized");
+				}
+				return _accountService.Get(id.Value);
+			}
+			else
+			{
+				return CurrentUser;
+			}
 		}
 
 		/// <summary>
@@ -36,19 +69,7 @@ namespace MovieRental.API.Controllers
 			Account account;
 			try
 			{
-				var currentUser = _accountService.Get(User.Identity.Name);
-				if (id.HasValue)
-				{
-					if (currentUser.Role == Account.AccountRole.User)
-					{
-						throw new SecurityException("Not authorized");
-					}
-					account = _accountService.Get(id.Value);
-				}
-				else
-				{
-					account = currentUser;
-				}
+				account = GetAccountByIdOrCurrent(id);
 			}
 			catch (SecurityException)
 			{
@@ -71,13 +92,48 @@ namespace MovieRental.API.Controllers
 		[Authorize]
 		[HttpPut]
 		[Route("account/{id?}")]
-		public IHttpActionResult UpdateAccount(int? id = null) // AccountModel account 
+		public IHttpActionResult UpdateAccount(AccountModel account, int? id = null)
 		{
 			// if id is passed in, verify user has access to that id
 			// if id is not passed in, use logged in user
+			Account dbAccount;
+			try
+			{
+				dbAccount = GetAccountByIdOrCurrent(id);
 
-			//update account
-			throw new NotImplementedException();
+				//validate role
+				if (string.IsNullOrWhiteSpace(account.UserRole))
+				{
+					account.UserRole = dbAccount.UserRole;
+				}
+				if (account.UserRole != dbAccount.UserRole && CurrentUser.Role == Account.AccountRole.User)
+				{
+					throw new SecurityException("Not authorized");
+				}
+				else if (string.IsNullOrEmpty(account.UserRole))
+				{
+					account.UserRole = dbAccount.UserRole;
+				}
+
+				//update account
+				Mapper.Map(account, dbAccount);
+				_accountService.Save(dbAccount);
+			}
+			catch (SecurityException)
+			{
+				return Unauthorized();
+			}
+			catch (ArgumentException ex)
+			{
+				return InternalServerError(new ApplicationException(ex.Message));
+			}
+			catch (Exception ex)
+			{
+				_log.Error($"Error updating account: {ex}");
+				return InternalServerError(new ApplicationException("Error updating account"));
+			}
+			//return account information
+			return Ok(dbAccount);
 		}
 
 		/// <summary>
@@ -86,10 +142,56 @@ namespace MovieRental.API.Controllers
 		/// <returns></returns>
 		[HttpPost]
 		[Route("account")]
-		public IHttpActionResult CreateAccount() // AccountModel account 
+		public IHttpActionResult CreateAccount(AccountModel account)
 		{
 			//create account
-			throw new NotImplementedException();
+			Account dbAccount;
+			try
+			{
+				dbAccount = Mapper.Map<Account>(account);
+				dbAccount.Active = true;
+				_accountService.Save(dbAccount);
+			}
+			catch (ArgumentException ex)
+			{
+				return InternalServerError(new ApplicationException(ex.Message));
+			}
+			catch (Exception ex)
+			{
+				_log.Error($"Error updating account: {ex}");
+				return InternalServerError(new ApplicationException("Error creating account"));
+			}
+			//return account information
+			return Ok(dbAccount);
+		}
+
+		/// <summary>
+		/// Delete account
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		[Authorize]
+		[HttpDelete]
+		[Route("account/{id?}")]
+		public IHttpActionResult DeleteAccount(int? id = null)
+		{
+			Account account;
+			try
+			{
+				account = GetAccountByIdOrCurrent(id);
+				// deactivate account
+				_accountService.Deactivate(account.ID);
+			}
+			catch (SecurityException)
+			{
+				return Unauthorized();
+			}
+			catch (Exception ex)
+			{
+				_log.Error($"Error retrieving account: {ex}");
+				return InternalServerError(new ApplicationException("Error retrieving account"));
+			}
+			return Ok(account);
 		}
 	}
 }

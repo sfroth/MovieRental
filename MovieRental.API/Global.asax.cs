@@ -13,6 +13,7 @@ namespace MovieRental.API
 			FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
 			RouteConfig.RegisterRoutes(RouteTable.Routes);
 			DependencyInjectorConfig.RegisterTypes();
+			AutoMapperConfig.Configure();
 		}
 	}
 }

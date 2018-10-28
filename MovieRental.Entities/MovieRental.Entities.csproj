@@ -39,6 +39,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -56,6 +57,10 @@
     <Compile Include="Migrations\201810281703538_Auth.cs" />
     <Compile Include="Migrations\201810281703538_Auth.Designer.cs">
       <DependentUpon>201810281703538_Auth.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201810282001128_AccountActive.cs" />
+    <Compile Include="Migrations\201810282001128_AccountActive.Designer.cs">
+      <DependentUpon>201810282001128_AccountActive.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Account.cs" />
@@ -76,6 +81,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201810281703538_Auth.resx">
       <DependentUpon>201810281703538_Auth.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201810282001128_AccountActive.resx">
+      <DependentUpon>201810282001128_AccountActive.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

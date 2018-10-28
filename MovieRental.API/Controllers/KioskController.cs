@@ -44,7 +44,7 @@ namespace MovieRental.API.Controllers
 		[Authorize]
 		[HttpPut]
 		[Route("kiosk/{id}")]
-		public IHttpActionResult UpdatKiosk(int id)// Kioskodel kiosk
+		public IHttpActionResult UpdateKiosk(int id)// Kioskodel kiosk
 		{
 			// update kiosk - verify user has rights to do so
 
@@ -61,6 +61,21 @@ namespace MovieRental.API.Controllers
 		public IHttpActionResult CreateKiosk()// KioskModel kiosk
 		{
 			// create kiosk - verify user has rights to do so
+			throw new NotImplementedException();
+		}
+
+		/// <summary>
+		/// Delete kiosk - admin action only
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		[Authorize]
+		[HttpDelete]
+		[Route("kiosk/{id}")]
+		public IHttpActionResult DeleteKiosk(int id)
+		{
+			// delete kiosk - verify user has rights to do so
+
 			throw new NotImplementedException();
 		}
 
