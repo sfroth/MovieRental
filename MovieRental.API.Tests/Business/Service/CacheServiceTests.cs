@@ -6,7 +6,7 @@ using MovieRental.Business.Service.Interface;
 using MovieRental.Business.Service;
 using StackExchange.Redis.Extensions.Core;
 
-namespace MovieRental.API.Tests.Business.Cache
+namespace MovieRental.API.Tests.Business.Service
 {
 	[TestFixture]
 	public class CacheServiceTests

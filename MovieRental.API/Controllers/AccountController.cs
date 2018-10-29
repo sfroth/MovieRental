@@ -42,7 +42,7 @@ namespace MovieRental.API.Controllers
 			// if id is not passed in, use logged in user
 			if (id.HasValue)
 			{
-				if (CurrentUser.Role == Account.AccountRole.User)
+				if (CurrentUser.Role != Account.AccountRole.Admin && CurrentUser.ID != id)
 				{
 					throw new SecurityException("Not authorized");
 				}
@@ -106,13 +106,9 @@ namespace MovieRental.API.Controllers
 				{
 					account.UserRole = dbAccount.UserRole;
 				}
-				if (account.UserRole != dbAccount.UserRole && CurrentUser.Role == Account.AccountRole.User)
+				if (account.UserRole != dbAccount.UserRole && CurrentUser.Role != Account.AccountRole.Admin)
 				{
 					throw new SecurityException("Not authorized");
-				}
-				else if (string.IsNullOrEmpty(account.UserRole))
-				{
-					account.UserRole = dbAccount.UserRole;
 				}
 
 				//update account
@@ -150,6 +146,7 @@ namespace MovieRental.API.Controllers
 			{
 				dbAccount = Mapper.Map<Account>(account);
 				dbAccount.Active = true;
+				dbAccount.Role = Account.AccountRole.User;
 				_accountService.Save(dbAccount);
 			}
 			catch (ArgumentException ex)
@@ -188,8 +185,8 @@ namespace MovieRental.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				_log.Error($"Error retrieving account: {ex}");
-				return InternalServerError(new ApplicationException("Error retrieving account"));
+				_log.Error($"Error deleting account: {ex}");
+				return InternalServerError(new ApplicationException("Error deleting account"));
 			}
 			return Ok(account);
 		}
