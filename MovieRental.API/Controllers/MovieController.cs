@@ -1,18 +1,18 @@
-﻿using MovieRental.Business.Service;
+﻿using AutoMapper;
+using log4net;
+using MovieRental.API.Models;
 using MovieRental.Business.Service.Interface;
-using MovieRental.Entities;
+using MovieRental.Business.Transfer;
+using MovieRental.Entities.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 
 namespace MovieRental.API.Controllers
 {
-    public class MovieController : ApiController
+	public class MovieController : ApiController
     {
 		private readonly IMovieService _movieService;
+		private readonly ILog _log = LogManager.GetLogger("MovieRental");
 
 		public MovieController(IMovieService movieService)
 		{
@@ -25,10 +25,19 @@ namespace MovieRental.API.Controllers
 		/// <returns></returns>
 		[HttpPost]
 		[Route("movies")]
-		public IHttpActionResult SearchMovies()// SearchParms
+		public IHttpActionResult SearchMovies(MovieSearchParams searchParams)
 		{
 			//search movies by term or by more complex search params
-			throw new NotImplementedException();
+			try
+			{
+				var movies = _movieService.Search(searchParams);
+				return Ok(movies);
+			}
+			catch (Exception ex)
+			{
+				_log.Error($"Error Searching movies: {ex}");
+				return InternalServerError(new ApplicationException("Error searching movies"));
+			}
 		}
 
 		/// <summary>
@@ -41,8 +50,16 @@ namespace MovieRental.API.Controllers
 		public IHttpActionResult GetMovie(int id)
 		{
 			// get movie by id
-			var movie = _movieService.Get(id);
-			return Ok(movie);
+			try
+			{
+				var movie = _movieService.Get(id);
+				return Ok(movie);
+			}
+			catch (Exception ex)
+			{
+				_log.Error($"Error getting movie: {ex}");
+				return InternalServerError(new ApplicationException("Error getting movie"));
+			}
 		}
 
 		/// <summary>
@@ -50,27 +67,59 @@ namespace MovieRental.API.Controllers
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
-		[Authorize]
+		[Authorize(Roles = "Admin")]
 		[HttpPut]
 		[Route("movie/{id}")]
-		public IHttpActionResult UpdateMovie(int id)// MovieModel movie
+		public IHttpActionResult UpdateMovie(int id, MovieModel movie)
 		{
 			// update movie - verify user has rights to do so
+			Movie dbMovie;
+			try
+			{
+				dbMovie = _movieService.Get(id);
 
-			throw new NotImplementedException();
+				Mapper.Map(movie, dbMovie);
+				_movieService.Save(dbMovie);
+			}
+			catch (ArgumentException ex)
+			{
+				return InternalServerError(new ApplicationException(ex.Message));
+			}
+			catch (Exception ex)
+			{
+				_log.Error($"Error updating movie: {ex}");
+				return InternalServerError(new ApplicationException("Error updating movie"));
+			}
+			//return movie information
+			return Ok(dbMovie);
 		}
 
 		/// <summary>
 		/// Create movie - admin action only
 		/// </summary>
 		/// <returns></returns>
-		[Authorize]
+		[Authorize(Roles = "Admin")]
 		[HttpPost]
 		[Route("movie")]
-		public IHttpActionResult CreateMovie()// MovieModel movie
+		public IHttpActionResult CreateMovie(MovieModel movie)
 		{
-			// create movie - verify user has rights to do so
-			throw new NotImplementedException();
+			Movie dbMovie;
+			try
+			{
+				dbMovie = Mapper.Map<Movie>(movie);
+				_movieService.Save(dbMovie);
+			}
+			catch (ArgumentException ex)
+			{
+				return InternalServerError(new ApplicationException(ex.Message));
+			}
+			catch (Exception ex)
+			{
+				_log.Error($"Error creating movie: {ex}");
+				return InternalServerError(new ApplicationException("Error creating movie"));
+			}
+			//return movie information
+			return Ok(dbMovie);
 		}
 	}
 }

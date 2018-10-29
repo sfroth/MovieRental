@@ -4,16 +4,12 @@ using MovieRental.API.Models;
 using MovieRental.Business.Service.Interface;
 using MovieRental.Entities.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Security;
 using System.Web.Http;
 
 namespace MovieRental.API.Controllers
 {
-    public class AccountController : ApiController
+	public class AccountController : ApiController
     {
 		private readonly IAccountService _accountService;
 		private readonly ILog _log = LogManager.GetLogger("MovieRental");

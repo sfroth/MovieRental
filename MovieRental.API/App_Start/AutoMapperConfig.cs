@@ -12,6 +12,7 @@ namespace MovieRental.API
 			{
 				cfg.CreateMap<AccountModel, Account>()
 					.ForMember(dest => dest.UserRole, opt => opt.MapFrom(src => string.IsNullOrEmpty(src.UserRole) ? "User" : src.UserRole));
+				cfg.CreateMap<MovieModel, Movie>();
 			});
 		}
 	}

@@ -1,9 +1,6 @@
-﻿using MovieRental.Entities.Models;
-using System;
+﻿using MovieRental.Business.Transfer;
+using MovieRental.Entities.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MovieRental.Business.Service.Interface
 {
@@ -15,5 +12,18 @@ namespace MovieRental.Business.Service.Interface
 		/// <param name="id"></param>
 		/// <returns></returns>
 		Movie Get(int id);
+
+		/// <summary>
+		/// Save (create or update) movie
+		/// </summary>
+		/// <param name="movie"></param>
+		void Save(Movie movie);
+
+		/// <summary>
+		/// Search for movies by search parameters
+		/// </summary>
+		/// <param name="searchParams"></param>
+		/// <returns></returns>
+		IEnumerable<Movie> Search(MovieSearchParams searchParams);
 	}
 }
