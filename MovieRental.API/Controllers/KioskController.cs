@@ -27,11 +27,33 @@ namespace MovieRental.API.Controllers
         }
 
 		/// <summary>
-        /// Get list of movies at the given kiosk
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [Authorize]
+		/// Get Kiosk by ID
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		[HttpGet]
+		[Route("kiosk/{id}")]
+		public IHttpActionResult GetKiosk(int id)
+		{
+			// get kiosk by id
+			try
+			{
+				var kiosk = _kioskService.Get(id);
+				return Ok(Mapper.Map<KioskModel>(kiosk));
+			}
+			catch (Exception ex)
+			{
+				_log.Error($"Error getting kiosk: {ex}");
+				return InternalServerError(new ApplicationException("Error getting kiosk"));
+			}
+		}
+
+		/// <summary>
+		/// Get list of movies at the given kiosk
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		[Authorize]
 		[HttpGet]
 		[Route("kiosk/{id}/movies")]
 		public IHttpActionResult GetMoviesAtKiosk(int id)
@@ -56,7 +78,7 @@ namespace MovieRental.API.Controllers
         [Authorize]
 		[HttpGet]
 		[Route("kiosks")]
-		public IHttpActionResult GetKiosksNear(Address location, int distance = 10, int? movieId = null) // pass in location and distance and optionally movie
+		public IHttpActionResult GetKiosksNear([FromUri]Address location, int distance = 10, int? movieId = null) // pass in location and distance and optionally movie
 		{
             // get list of kiosks by distance from location
 		    try
@@ -100,7 +122,7 @@ namespace MovieRental.API.Controllers
 		        return InternalServerError(new ApplicationException("Error updating kiosk"));
 		    }
             //return kiosk information
-            return Ok(dbKiosk);
+            return Ok(Mapper.Map<KioskModel>(dbKiosk));
 		}
 
         /// <summary>
@@ -128,16 +150,16 @@ namespace MovieRental.API.Controllers
 		        _log.Error($"Error creating kiosk: {ex}");
 		        return InternalServerError(new ApplicationException("Error creating kiosk"));
 		    }
-            //return kiosk information
-            return Ok(dbKiosk);
+			//return kiosk information
+			return Ok(Mapper.Map<KioskModel>(dbKiosk));
 		}
 
-        /// <summary>
-        /// Delete kiosk - admin action only
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [Authorize(Roles = "Admin")]
+		/// <summary>
+		/// Delete kiosk - admin action only
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		[Authorize(Roles = "Admin")]
 		[HttpDelete]
 		[Route("kiosk/{id}")]
 		public IHttpActionResult DeleteKiosk(int id)

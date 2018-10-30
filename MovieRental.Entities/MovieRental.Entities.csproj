@@ -65,6 +65,10 @@
     <Compile Include="Migrations\201810282001128_AccountActive.Designer.cs">
       <DependentUpon>201810282001128_AccountActive.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201810300340487_GeoLocationRentalReturnNullable.cs" />
+    <Compile Include="Migrations\201810300340487_GeoLocationRentalReturnNullable.Designer.cs">
+      <DependentUpon>201810300340487_GeoLocationRentalReturnNullable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Account.cs" />
     <Compile Include="Models\AccountMovie.cs" />
@@ -89,6 +93,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201810282001128_AccountActive.resx">
       <DependentUpon>201810282001128_AccountActive.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201810300340487_GeoLocationRentalReturnNullable.resx">
+      <DependentUpon>201810300340487_GeoLocationRentalReturnNullable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

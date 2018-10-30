@@ -88,7 +88,7 @@ namespace MovieRental.Business.Service
         /// <param name="distance"></param>
         /// <param name="movieId"></param>
         /// <returns></returns>
-        public IEnumerable<Kiosk> Get(Address location, int distance, int? movieId)
+        public IEnumerable<Kiosk> Get(Address location, int distance, int? movieId = null)
         {
             var cacheKey = $"kiosks_{location.GetHashCode()}_{distance}_{movieId}";
             var resultIds = _cacheService.Get<List<int>>(cacheKey);
@@ -110,8 +110,8 @@ namespace MovieRental.Business.Service
             }
             else
             {
-                // call Get to take advantage of single-item caching
-                return resultIds.Select(m => Get(m)).ToList();
+				// call Get to take advantage of single-item caching - items that have been deleted will return null
+				return resultIds.Select(m => Get(m)).Where(m => m != null).ToList();
             }
         }
 
@@ -157,8 +157,8 @@ namespace MovieRental.Business.Service
             }
             else
             {
-                // call Get to take advantage of single-item caching
-                return resultIds.Select(m => _movieService.Get(m)).ToList();
+                // call Get to take advantage of single-item caching - items that have been deleted will return null
+                return resultIds.Select(m => _movieService.Get(m)).Where(m => m != null).ToList();
             }
         }
 

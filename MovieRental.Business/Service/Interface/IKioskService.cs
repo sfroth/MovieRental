@@ -29,7 +29,7 @@ namespace MovieRental.Business.Service.Interface
         /// <param name="distance"></param>
         /// <param name="movieId"></param>
         /// <returns></returns>
-        IEnumerable<Kiosk> Get(Address location, int distance, int? movieId);
+        IEnumerable<Kiosk> Get(Address location, int distance, int? movieId = null);
 
         /// <summary>
         /// Delete Kiosk by id

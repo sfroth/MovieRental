@@ -27,6 +27,7 @@ namespace MovieRental.API
 			builder.RegisterType<DataContext>().As<IDataContext>().InstancePerRequest();
 			builder.RegisterType<MovieService>().As<IMovieService>();
 			builder.RegisterType<AccountService>().As<IAccountService>();
+			builder.RegisterType<KioskService>().As<IKioskService>();
 			builder.RegisterType<CacheService>().As<ICacheService>();
 			builder.RegisterType<StackExchangeRedisCacheClient>().As<ICacheClient>().WithParameters(new[] { new NamedParameter("serializer", new NewtonsoftSerializer()), new NamedParameter("connectionString", Config.CacheHost) });
 

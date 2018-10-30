@@ -25,7 +25,7 @@ namespace MovieRental.API.Tests.Business.Service
 	    {
 	        _dataContext = new Mock<IDataContext>();
 	        _movieDbSet = Util.GetQueryableMockDbSet(
-	            new Movie { ID = 1, Title = "Serenity", ReleaseDate = new DateTime(2005, 9, 1)},
+	            new Movie { ID = 1, Title = "Serenity", ReleaseDate = new DateTime(2005, 9, 1) },
 	            new Movie { ID = 2, Title = "Star Wars", ReleaseDate = new DateTime(1977, 6, 1) },
 	            new Movie { ID = 3, Title = "Wreck It Ralph", ReleaseDate = new DateTime(2010, 1, 1) },
 	            new Movie { ID = 3, Title = "The Little Mermaid", ReleaseDate = new DateTime(1988, 1, 1) }

@@ -93,7 +93,8 @@ namespace MovieRental.API.Tests.Business.Service
 		[Test]
 		public void SaveUpdate()
 		{
-			_accountService.Save(new Account { ID = 1, Username = "MalReynolds", Password = "Inara", UserRole = "Admin" });
+			_dataContext.Setup(c => c.GetOriginalValue(It.IsAny<Account>(), It.IsAny<string>()));
+			_accountService.Save(new Account { ID = 1, Username = "MalReynolds", UserRole = "Admin" });
 			_accountDbSet.Verify(x => x.Add(It.IsAny<Account>()), Times.Never);
 			_dataContext.Verify(x => x.SaveChanges(), Times.Once);
 		}
