@@ -51,12 +51,6 @@ namespace MovieRental.Business.Service
             {
                 _context.Kiosks.Add(kiosk);
             }
-            else
-            {
-                // make sure to update address, rather than create new one and orphan old
-                var orig_address = (Address)_context.GetOriginalValue(kiosk, "Address");
-                kiosk.Address.ID = orig_address.ID;
-            }
             _context.SaveChanges();
 
             // Remove item from cache so it can be refreshed on next pull
@@ -128,8 +122,10 @@ namespace MovieRental.Business.Service
                 _context.KioskMovies.Remove(movie);
             }
 
-            // delete requires an object passed in, but only looks at the id
-            _context.Kiosks.Remove(new Kiosk {ID = id});
+			// delete requires an object passed in from the same context, so cached item will error
+			var kiosk = _context.Kiosks.FirstOrDefault(k => k.ID == id);
+			_context.Addresses.Remove(kiosk.Address);
+			_context.Kiosks.Remove(kiosk);
             _context.SaveChanges();
 
             // Remove item from cache

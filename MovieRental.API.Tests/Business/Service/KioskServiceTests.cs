@@ -21,8 +21,9 @@ namespace MovieRental.API.Tests.Business.Service
         private Mock<IMovieService> _movieService;
         private Mock<ICacheService> _cacheService;
         private Mock<DbSet<Kiosk>> _kioskDbSet;
-        private Mock<DbSet<Movie>> _movieDbSet;
-        private Mock<DbSet<KioskMovie>> _kioskMovieDbSet;
+		private Mock<DbSet<Movie>> _movieDbSet;
+		private Mock<DbSet<Address>> _addressDbSet;
+		private Mock<DbSet<KioskMovie>> _kioskMovieDbSet;
         private IKioskService _kioskService;
 
         [SetUp]
@@ -30,8 +31,8 @@ namespace MovieRental.API.Tests.Business.Service
         {
             _dataContext = new Mock<IDataContext>();
             _kioskDbSet = Util.GetQueryableMockDbSet(
-                new Kiosk { ID = 1, Name = "Vons", Address = new Address { StreetAddress1 = "123 Main St", City = "Los Angeles", StateProvince = "California", Country = "US", PostalCode = "90028"} },
-                new Kiosk { ID = 2, Name = "Ralphs", Address = new Address { StreetAddress1 = "124 Main St", City = "Los Angeles", StateProvince = "California", Country = "US", PostalCode = "90028" } }
+                new Kiosk { ID = 1, Name = "Vons", Address = new Address { ID = 1, StreetAddress1 = "123 Main St", City = "Los Angeles", StateProvince = "California", Country = "US", PostalCode = "90028"} },
+                new Kiosk { ID = 2, Name = "Ralphs", Address = new Address { ID = 2, StreetAddress1 = "124 Main St", City = "Los Angeles", StateProvince = "California", Country = "US", PostalCode = "90028" } }
             );
             _movieDbSet = Util.GetQueryableMockDbSet(
                 new Movie { ID = 1, Title = "Serenity", ReleaseDate = new DateTime(2005, 9, 1) },
@@ -40,11 +41,16 @@ namespace MovieRental.API.Tests.Business.Service
             _kioskMovieDbSet = Util.GetQueryableMockDbSet(
                 new KioskMovie { ID = 1, Kiosk = new Kiosk { ID = 1 }, Movie = new Movie { ID = 1 }, Stock = 2 }
             );
+			_addressDbSet = Util.GetQueryableMockDbSet(
+				_kioskDbSet.Object.First().Address,
+				_kioskDbSet.Object.Last().Address
+			);
 			_kioskDbSet.Object.ToList().ForEach(f => f.Address.Geocode());
 			_dataContext.Setup(x => x.Kiosks).Returns(_kioskDbSet.Object);
             _dataContext.Setup(x => x.Movies).Returns(_movieDbSet.Object);
 			_dataContext.Setup(x => x.KioskMovies).Returns(_kioskMovieDbSet.Object);
-            _movieService = new Mock<IMovieService>();
+			_dataContext.Setup(x => x.Addresses).Returns(_addressDbSet.Object);
+			_movieService = new Mock<IMovieService>();
             _cacheService = new Mock<ICacheService>();
             _kioskService = new KioskService(_dataContext.Object, _cacheService.Object, _movieService.Object);
         }
@@ -61,8 +67,7 @@ namespace MovieRental.API.Tests.Business.Service
         [Test]
         public void SaveUpdate()
         {
-            _dataContext.Setup(s => s.GetOriginalValue(It.IsAny<Kiosk>(), It.IsAny<string>())).Returns(new Address { ID = 1 });
-            _kioskService.Save(new Kiosk { ID = 1, Name = "Vons", Address = new Address { StreetAddress1 = "123 Broad St", City = "Los Angeles", StateProvince = "California", Country = "US", PostalCode = "90028" } });
+            _kioskService.Save(new Kiosk { ID = 1, Name = "Vons", Address = new Address { ID = 1, StreetAddress1 = "123 Broad St", City = "Los Angeles", StateProvince = "California", Country = "US", PostalCode = "90028" } });
             _kioskDbSet.Verify(x => x.Add(It.IsAny<Kiosk>()), Times.Never);
             _dataContext.Verify(x => x.SaveChanges(), Times.Once);
             _cacheService.Verify(s => s.Delete(It.IsAny<string>()), Times.Once);
@@ -71,7 +76,7 @@ namespace MovieRental.API.Tests.Business.Service
         [Test]
         public void SaveNoName()
         {
-            var ex = Assert.Throws<ArgumentException>(() => _kioskService.Save(new Kiosk { ID = 1, Name = "", Address = new Address { StreetAddress1 = "123 Broad St", City = "Los Angeles", StateProvince = "California", Country = "US", PostalCode = "90028" } }));
+            var ex = Assert.Throws<ArgumentException>(() => _kioskService.Save(new Kiosk { ID = 1, Name = "", Address = new Address { ID = 1, StreetAddress1 = "123 Broad St", City = "Los Angeles", StateProvince = "California", Country = "US", PostalCode = "90028" } }));
             Assert.AreEqual("Kiosk name cannot be empty", ex.Message);
 			_dataContext.Verify(x => x.SaveChanges(), Times.Never);
 		}

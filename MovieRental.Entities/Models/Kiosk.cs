@@ -11,6 +11,6 @@ namespace MovieRental.Entities.Models
 		[Required]
 		public string Name { get; set; }
 		[Required]
-		public Address Address { get; set; }
+		public virtual Address Address { get; set; }
 	}
 }
