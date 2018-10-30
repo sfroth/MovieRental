@@ -37,5 +37,19 @@ namespace MovieRental.Business.Service.Interface
 		/// </summary>
 		/// <param name="id"></param>
 		void Deactivate(int id);
+
+        /// <summary>
+        /// Create AccountMovie association
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <param name="movieId"></param>
+	    void Rent(int accountId, int movieId);
+
+	    /// <summary>
+	    /// Update AccountMovie association
+	    /// </summary>
+	    /// <param name="accountId"></param>
+	    /// <param name="movieId"></param>
+	    void Return(int accountId, int movieId);
 	}
 }

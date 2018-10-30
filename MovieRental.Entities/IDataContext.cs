@@ -14,6 +14,6 @@ namespace MovieRental.Entities
 		DbSet<Address> Addresses { get; }
 
 		int SaveChanges();
-		DbEntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;
+        object GetOriginalValue<TEntity>(TEntity entity, string fieldName) where TEntity : class;
 	}
 }

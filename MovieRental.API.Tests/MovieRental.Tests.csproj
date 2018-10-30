@@ -163,6 +163,7 @@
     <Compile Include="API\Controllers\MovieControllerTests.cs" />
     <Compile Include="Business\Service\AccountServiceTests.cs" />
     <Compile Include="Business\Service\CacheServiceTests.cs" />
+    <Compile Include="Business\Service\KioskServiceTests.cs" />
     <Compile Include="Business\Service\MovieServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util.cs" />

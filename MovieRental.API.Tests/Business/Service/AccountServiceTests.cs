@@ -13,7 +13,9 @@ namespace MovieRental.API.Tests.Business.Service
 	public class AccountServiceTests
 	{
 		private Mock<IDataContext> _dataContext;
-		private Mock<DbSet<Account>> _accountDbSet;
+	    private Mock<DbSet<Account>> _accountDbSet;
+	    private Mock<DbSet<Movie>> _movieDbSet;
+	    private Mock<DbSet<AccountMovie>> _accountMovieDbSet;
 		private IAccountService _accountService;
 
 		[SetUp]
@@ -26,7 +28,15 @@ namespace MovieRental.API.Tests.Business.Service
 				new Account { ID = 3, Username = "River", Password = "reaver", UserRole = "User", Active = true },
 				new Account { ID = 3, Username = "Jayne", Password = "cobb", UserRole = "User", Active = false }
 			);
-			_dataContext.Setup(x => x.Accounts).Returns(_accountDbSet.Object);
+		    _movieDbSet = Util.GetQueryableMockDbSet(
+		        new Movie { ID = 1, Title = "Serenity", ReleaseDate = new DateTime(2005, 9, 1) }
+		    );
+            _accountMovieDbSet = Util.GetQueryableMockDbSet(
+		        new AccountMovie { ID = 1, Account = new Account { ID = 1 }, Movie = new Movie { ID = 1 }, RentalDate = new DateTime(2018, 10, 1)}
+		    );
+            _dataContext.Setup(x => x.Accounts).Returns(_accountDbSet.Object);
+		    _dataContext.Setup(x => x.Movies).Returns(_movieDbSet.Object);
+		    _dataContext.Setup(x => x.AccountMovies).Returns(_accountMovieDbSet.Object);
 			_accountService = new AccountService(_dataContext.Object);
 		}
 
@@ -93,20 +103,64 @@ namespace MovieRental.API.Tests.Business.Service
 		{
 			var ex = Assert.Throws<ArgumentException>(() => _accountService.Save(new Account { ID = 1, Username = "", Password = "asdf", UserRole = "User" }));
 			Assert.AreEqual("Username cannot be empty", ex.Message);
+		    _dataContext.Verify(x => x.SaveChanges(), Times.Never);
 		}
 
-		[Test]
+        [Test]
 		public void SaveUsernameConflict()
 		{
 			var ex = Assert.Throws<ArgumentException>(() => _accountService.Save(new Account { Username = "River", Password = "asdf", UserRole = "User" }));
 			Assert.AreEqual("Username is already taken", ex.Message);
+		    _dataContext.Verify(x => x.SaveChanges(), Times.Never);
 		}
 
-		[Test]
+        [Test]
 		public void SaveNoPassword()
 		{
 			var ex = Assert.Throws<ArgumentException>(() => _accountService.Save(new Account { Username = "Book", Password = "", UserRole = "User" }));
 			Assert.AreEqual("Password cannot be empty", ex.Message);
+		    _dataContext.Verify(x => x.SaveChanges(), Times.Never);
 		}
-	}
+
+        [Test]
+	    public void Rent()
+        {
+            _accountService.Rent(1, 1);
+            _accountMovieDbSet.Verify(s => s.Add(It.IsAny<AccountMovie>()), Times.Once);
+            _dataContext.Verify(x => x.SaveChanges(), Times.Once);
+        }
+
+        [Test]
+	    public void RentNoAccount()
+	    {
+	        var ex = Assert.Throws<ArgumentException>(() => _accountService.Rent(8, 1));
+	        Assert.AreEqual("Account not found", ex.Message);
+            _accountMovieDbSet.Verify(s => s.Add(It.IsAny<AccountMovie>()), Times.Never);
+	        _dataContext.Verify(x => x.SaveChanges(), Times.Never);
+	    }
+
+        [Test]
+	    public void RentNoMovie()
+	    {
+	        var ex = Assert.Throws<ArgumentException>(() => _accountService.Rent(1, 6));
+	        Assert.AreEqual("Movie not found", ex.Message);
+	        _accountMovieDbSet.Verify(s => s.Add(It.IsAny<AccountMovie>()), Times.Never);
+	        _dataContext.Verify(x => x.SaveChanges(), Times.Never);
+	    }
+
+	    [Test]
+	    public void Return()
+	    {
+	        _accountService.Return(1, 1);
+	        _dataContext.Verify(x => x.SaveChanges(), Times.Once);
+	    }
+
+	    [Test]
+	    public void ReturnNoRental()
+	    {
+	        var ex = Assert.Throws<ArgumentException>(() => _accountService.Return(8, 1));
+	        Assert.AreEqual("No active rental found", ex.Message);
+	        _dataContext.Verify(x => x.SaveChanges(), Times.Never);
+	    }
+    }
 }

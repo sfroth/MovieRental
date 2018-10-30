@@ -95,7 +95,9 @@
     <Compile Include="Service\Interface\ICacheService.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\Interface\IKioskService.cs" />
     <Compile Include="Service\Interface\IMovieService.cs" />
+    <Compile Include="Service\KioskService.cs" />
     <Compile Include="Service\MovieService.cs" />
     <Compile Include="Transfer\MovieSearchParams.cs" />
   </ItemGroup>

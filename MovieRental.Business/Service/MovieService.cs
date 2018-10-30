@@ -77,10 +77,10 @@ namespace MovieRental.Business.Service
 			var cacheKey = $"moviesearch_{searchParams.GetHashCode()}";
 			var resultIds = _cacheService.Get<List<int>>(cacheKey);
 
-			// Search results are saved as a list of IDs so that updates to movies to not break cache
+			// Search results are saved as a list of IDs so that updates to movies do not break cache
 			if (resultIds == null)
 			{
-				var searchedMovies = _context.Movies.Where(m => string.IsNullOrEmpty(searchParams.SearchTerm) ? true : m.Title.Contains(searchParams.SearchTerm));
+				var searchedMovies = _context.Movies.Where(m => string.IsNullOrEmpty(searchParams.SearchTerm) ? true : m.Title.ToLower().Contains(searchParams.SearchTerm.ToLower()));
 				if (searchParams.ReleaseFrom.HasValue)
 				{
 					searchedMovies = searchedMovies.Where(m => m.ReleaseDate >= searchParams.ReleaseFrom.Value.Date);

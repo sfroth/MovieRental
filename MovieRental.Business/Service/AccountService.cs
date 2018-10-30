@@ -29,12 +29,41 @@ namespace MovieRental.Business.Service
 			_context.SaveChanges();
 		}
 
-		/// <summary>
-		/// Get Account by id
-		/// </summary>
-		/// <param name="id"></param>
-		/// <returns></returns>
-		public Account Get(int id)
+	    /// <summary>
+	    /// Create AccountMovie association
+	    /// </summary>
+	    /// <param name="accountId"></param>
+	    /// <param name="movieId"></param>
+	    public void Rent(int accountId, int movieId)
+	    {
+	        var account = Get(accountId);
+	        if (account == null)
+	        {
+	            throw new ArgumentException("Account not found");
+	        }
+
+	        var movie = _context.Movies.FirstOrDefault(m => m.ID == movieId);
+	        if (movie == null)
+	        {
+	            throw new ArgumentException("Movie not found");
+	        }
+
+	        var rental = new AccountMovie
+	        {
+	            Account = account,
+	            Movie = movie,
+	            RentalDate = DateTime.Now
+	        };
+	        _context.AccountMovies.Add(rental);
+	        _context.SaveChanges();
+	    }
+
+        /// <summary>
+        /// Get Account by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public Account Get(int id)
 		{
 			return _context.Accounts.FirstOrDefault(m => m.ID == id);
 		}
@@ -93,7 +122,7 @@ namespace MovieRental.Business.Service
 			else
 			{
 				// grab existing password from database, so it doesn't get overwritten
-				account.Password = (string)_context.Entry(account).OriginalValues["Password"];
+				account.Password = (string)_context.GetOriginalValue(account, "Password");
 			}
 			if (account.ID == 0)
 			{
@@ -101,5 +130,18 @@ namespace MovieRental.Business.Service
 			}
 			_context.SaveChanges();
 		}
-	}
+
+        public void Return(int accountId, int movieId)
+        {
+            var rental = _context.AccountMovies.FirstOrDefault(m => m.Movie.ID == movieId && m.Account.ID == accountId && m.ReturnDate == null);
+            if (rental == null)
+            {
+                throw new ArgumentException("No active rental found");
+            }
+
+            rental.ReturnDate = DateTime.Now;
+
+            _context.SaveChanges();
+        }
+    }
 }

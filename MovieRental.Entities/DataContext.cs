@@ -17,9 +17,14 @@ namespace MovieRental.Entities
 		public DbSet<AccountMovie> AccountMovies { get; set; }
 		public DbSet<Address> Addresses { get; set; }
 
-		protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
 		{
 			modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
 		}
+
+        public object GetOriginalValue<TEntity>(TEntity entity, string fieldName) where TEntity : class
+        {
+            return Entry(entity).OriginalValues[fieldName];
+        }
 	}
 }

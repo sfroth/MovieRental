@@ -14,6 +14,6 @@ namespace MovieRental.Entities.Models
 		[Required]
 		public virtual Movie Movie { get; set; }
 		public DateTime RentalDate { get; set; }
-		public DateTime ReturnDate { get; set; }
+		public DateTime? ReturnDate { get; set; }
 	}
 }
