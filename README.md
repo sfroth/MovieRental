@@ -8,7 +8,7 @@ This project is best run from Visual Studio 2017, using SQL Express and IIS Expr
 
 Instructions:
 * Download code, open in Visual Studio
-* From Package Manager, select the MovieRental.Entity project, and run `Update-Database` to run mogrations and seed the first user.
+* From Package Manager, select the MovieRental.Entity project, and run `Update-Database` to run migrations and seed the first user.
 * Run project
 * Use cURL or any rest client to run methods
 
