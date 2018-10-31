@@ -35,7 +35,13 @@ namespace MovieRental.API
                     .ForMember(dest => dest.StateProvince, opt => opt.MapFrom(src => src.Address != null ? src.Address.StateProvince : null))
                     .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Address != null ? src.Address.Country : null))
                     .ForMember(dest => dest.PostalCode, opt => opt.MapFrom(src => src.Address != null ? src.Address.PostalCode : null));
-            });
+				cfg.CreateMap<AccountMovie, AccountMovieModel>()
+					.ForMember(dest => dest.AccountID, opt => opt.MapFrom(src => src.Account.ID))
+					.ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.Account.Username))
+					.ForMember(dest => dest.MovieID, opt => opt.MapFrom(src => src.Movie.ID))
+					.ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Movie.Title));
+
+			});
 		}
 	}
 }

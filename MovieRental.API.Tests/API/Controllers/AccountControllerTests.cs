@@ -194,7 +194,7 @@ namespace MovieRental.API.Tests.API.Controllers
 	        _accountService.Setup(m => m.Get(It.IsAny<int>())).Returns(new Account { Username = "MalReynolds", ID = 2 });
 	        _accountService.Setup(m => m.Get(It.IsAny<string>())).Returns(new Account { Username = "Wash", UserRole = "Admin" });
 	        var actionResult = _accountController.RentalHistory(2);
-	        var conNegResult = actionResult as OkNegotiatedContentResult<IEnumerable<AccountMovie>>;
+	        var conNegResult = actionResult as OkNegotiatedContentResult<IEnumerable<AccountMovieModel>>;
 	        Assert.IsNotNull(conNegResult);
 	        Assert.IsNotNull(conNegResult.Content);
 	    }

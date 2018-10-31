@@ -222,6 +222,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountModel.cs" />
+    <Compile Include="Models\AccountMovieModel.cs" />
     <Compile Include="Models\KioskModel.cs" />
     <Compile Include="Models\MovieStockModel.cs" />
     <Compile Include="Models\MovieModel.cs" />

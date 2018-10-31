@@ -4,6 +4,7 @@ using MovieRental.API.Models;
 using MovieRental.Business.Service.Interface;
 using MovieRental.Entities.Models;
 using System;
+using System.Linq;
 using System.Security;
 using System.Web.Http;
 
@@ -194,14 +195,15 @@ namespace MovieRental.API.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpGet]
-        [Route("account/{id?}")]
-        public IHttpActionResult RentalHistory(int? id = null)
+		[Route("account/{id}/history")]
+		[Route("account/history")]
+		public IHttpActionResult RentalHistory(int? id = null)
         {
             try
             {
                 var account = GetAccountByIdOrCurrent(id);
-                // deactivate account
-                return Ok(_accountService.RentalHistory(account.ID));
+				var history = _accountService.RentalHistory(account.ID).ToList();
+				return Ok(history.Select(Mapper.Map<AccountMovieModel>));
             }
             catch (SecurityException)
             {
