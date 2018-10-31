@@ -12,7 +12,7 @@ Instructions:
 * Run project
 * Use cURL or any rest client to run methods
 
-If redis cache server is available, the host can be added to Web.Config in the CacheHost key. If no server is available, delete the cache host value. The system will automatically skip caching if that is blank.
+If redis cache server is available, the host can be added to Web.Config in the CacheHost key. If no server is available, leave CacheHost blank. The system will automatically skip caching if that is blank.
 
 -----
 
