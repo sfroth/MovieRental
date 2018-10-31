@@ -84,11 +84,13 @@ namespace MovieRental.Business.Service
 				var searchedMovies = _context.Movies.Where(m => string.IsNullOrEmpty(searchParams.SearchTerm) ? true : m.Title.ToLower().Contains(searchParams.SearchTerm.ToLower()));
 				if (searchParams.ReleaseFrom.HasValue)
 				{
-					searchedMovies = searchedMovies.Where(m => m.ReleaseDate >= searchParams.ReleaseFrom.Value.Date);
+					var start = searchParams.ReleaseFrom.Value.Date;
+					searchedMovies = searchedMovies.Where(m => m.ReleaseDate >= start);
 				}
 				if (searchParams.ReleaseTo.HasValue)
 				{
-					searchedMovies = searchedMovies.Where(m => m.ReleaseDate <= searchParams.ReleaseTo.Value.Date);
+					var end = searchParams.ReleaseTo.Value.Date;
+					searchedMovies = searchedMovies.Where(m => m.ReleaseDate <= end);
 				}
 				var ids = searchedMovies.Select(m => m.ID).ToList();
 				_cacheService.Set(cacheKey, ids, TimeSpan.FromHours(1));  // TODO: Do research to determine what the ideal value is for this TTL
