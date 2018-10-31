@@ -80,6 +80,7 @@ namespace MovieRental.Business.Service
 			// Search results are saved as a list of IDs so that updates to movies do not break cache
 			if (resultIds == null)
 			{
+                // TODO: Use more sophisticated searching algorithms, add more fields for searching
 				var searchedMovies = _context.Movies.Where(m => string.IsNullOrEmpty(searchParams.SearchTerm) ? true : m.Title.ToLower().Contains(searchParams.SearchTerm.ToLower()));
 				if (searchParams.ReleaseFrom.HasValue)
 				{

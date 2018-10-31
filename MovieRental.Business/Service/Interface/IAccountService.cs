@@ -1,4 +1,5 @@
-﻿using MovieRental.Entities.Models;
+﻿using System.Collections.Generic;
+using MovieRental.Entities.Models;
 
 namespace MovieRental.Business.Service.Interface
 {
@@ -51,5 +52,12 @@ namespace MovieRental.Business.Service.Interface
 	    /// <param name="accountId"></param>
 	    /// <param name="movieId"></param>
 	    void Return(int accountId, int movieId);
+
+        /// <summary>
+        /// Get Rental History
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <returns></returns>
+        IEnumerable<AccountMovie> RentalHistory(int accountId);
 	}
 }

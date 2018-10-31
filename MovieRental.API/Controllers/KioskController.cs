@@ -26,11 +26,12 @@ namespace MovieRental.API.Controllers
             _accountService = accountService;
         }
 
-		/// <summary>
-		/// Get Kiosk by ID
-		/// </summary>
-		/// <param name="id"></param>
-		/// <returns></returns>
+        /// <summary>
+        /// Get Kiosk by ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize]
 		[HttpGet]
 		[Route("kiosk/{id}")]
 		public IHttpActionResult GetKiosk(int id)
@@ -61,7 +62,7 @@ namespace MovieRental.API.Controllers
             // grab all movies at given kiosk
 		    try
 		    {
-		        var movies = _kioskService.GetMovies(id).Select(Mapper.Map<KioskModel>);
+		        var movies = _kioskService.GetMovies(id);
 		        return Ok(movies);
 		    }
 		    catch (Exception ex)
@@ -177,7 +178,7 @@ namespace MovieRental.API.Controllers
 		        _log.Error($"Error deleting kiosk: {ex}");
 		        return InternalServerError(new ApplicationException("Error deleting kiosk"));
 		    }
-		    return Ok(kiosk);
+		    return Ok();
 		}
 
         /// <summary>
@@ -198,13 +199,13 @@ namespace MovieRental.API.Controllers
 		        var kiosk = _kioskService.Get(id);
 		        if (kiosk == null)
 		        {
-		            return InternalServerError(new ApplicationException("Kiosk not found"));
+		            throw new ArgumentException("Kiosk not found");
 		        }
 
 		        var dbMovies = movies.Select(m => _movieService.Get(m.MovieID));
                 if (dbMovies.Any(m => m == null))
 		        {
-		            return InternalServerError(new ApplicationException("Invalid Movie IDs"));
+		            throw new ArgumentException("Invalid Movie IDs");
 		        }
 
 		        foreach (var entry in movies)
@@ -218,8 +219,8 @@ namespace MovieRental.API.Controllers
 		    }
 		    catch (Exception ex)
 		    {
-		        _log.Error($"Error deleting kiosk: {ex}");
-		        return InternalServerError(new ApplicationException("Error deleting kiosk"));
+		        _log.Error($"Error adding movies: {ex}");
+		        return InternalServerError(new ApplicationException("Error adding movies"));
 		    }
 		    return Ok();
 		}
@@ -242,13 +243,13 @@ namespace MovieRental.API.Controllers
                 var kiosk = _kioskService.Get(id);
                 if (kiosk == null)
                 {
-                    return InternalServerError(new ApplicationException("Kiosk not found"));
+		            throw new ArgumentException("Kiosk not found");
                 }
 
                 var dbMovies = movies.Select(m => _movieService.Get(m.MovieID));
                 if (dbMovies.Any(m => m == null))
                 {
-                    return InternalServerError(new ApplicationException("Invalid Movie IDs"));
+                    throw new ArgumentException("Invalid Movie IDs");
                 }
 
                 foreach (var entry in movies)
@@ -262,8 +263,8 @@ namespace MovieRental.API.Controllers
             }
             catch (Exception ex)
             {
-                _log.Error($"Error deleting kiosk: {ex}");
-                return InternalServerError(new ApplicationException("Error deleting kiosk"));
+                _log.Error($"Error removing movies: {ex}");
+                return InternalServerError(new ApplicationException("Error removing movies"));
             }
             return Ok();
         }
@@ -286,13 +287,13 @@ namespace MovieRental.API.Controllers
 		        var kiosk = _kioskService.Get(id);
 		        if (kiosk == null)
 		        {
-		            return InternalServerError(new ApplicationException("Kiosk not found"));
+		            throw new ArgumentException("Kiosk not found");
 		        }
 
-		        var movie = _kioskService.GetMovies(id).FirstOrDefault(m => m.ID == movieId);
+                var movie = _kioskService.GetMovies(id).FirstOrDefault(m => m.ID == movieId);
 		        if (movie == null)
 		        {
-		            return InternalServerError(new ApplicationException("Movie not in stock at this kiosk"));
+		            throw new ArgumentException("Movie not in stock at this kiosk");
 		        }
 
 	            _kioskService.RemoveMovie(id, movieId, 1);
@@ -329,10 +330,10 @@ namespace MovieRental.API.Controllers
 		        var kiosk = _kioskService.Get(id);
 		        if (kiosk == null)
 		        {
-		            return InternalServerError(new ApplicationException("Kiosk not found"));
+		            throw new ArgumentException("Kiosk not found");
 		        }
 
-		        var currentUser = _accountService.Get(User.Identity.Name);
+                var currentUser = _accountService.Get(User.Identity.Name);
 		        // if there is no rental record found, this will throw an exception
                 // since a rental record requires a valid movie, this essentially validates the movie id
 		        _accountService.Return(currentUser.ID, movieId);

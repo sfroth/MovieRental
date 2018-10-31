@@ -186,5 +186,32 @@ namespace MovieRental.API.Controllers
 			}
 			return Ok(account);
 		}
+
+        /// <summary>
+        /// Account Rental History
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet]
+        [Route("account/{id?}")]
+        public IHttpActionResult RentalHistory(int? id = null)
+        {
+            try
+            {
+                var account = GetAccountByIdOrCurrent(id);
+                // deactivate account
+                return Ok(_accountService.RentalHistory(account.ID));
+            }
+            catch (SecurityException)
+            {
+                return Unauthorized();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"Error getting history: {ex}");
+                return InternalServerError(new ApplicationException("Error getting history"));
+            }
+        }
 	}
 }

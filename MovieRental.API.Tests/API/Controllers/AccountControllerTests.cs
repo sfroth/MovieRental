@@ -5,6 +5,7 @@ using MovieRental.Business.Service.Interface;
 using MovieRental.Entities.Models;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Security.Principal;
 using System.Web.Http.Results;
 
@@ -16,14 +17,10 @@ namespace MovieRental.API.Tests.API.Controllers
 		private Mock<IAccountService> _accountService;
 		private AccountController _accountController;
 
-		public void SetupFixture()
-		{
-		}
-
-		[SetUp]
+        [SetUp]
 		public void SetUp()
 		{
-			AutoMapperConfig.Configure();
+		    AutoMapperConfig.Configure();
 			_accountService = new Mock<IAccountService>();
 			_accountController = new AccountController(_accountService.Object)
 			{
@@ -190,5 +187,36 @@ namespace MovieRental.API.Tests.API.Controllers
 			Assert.IsNotNull(conNegResult);
 			Assert.AreEqual("Error deleting account", conNegResult.Exception.Message);
 		}
+
+	    [Test]
+	    public void RentalHistory()
+	    {
+	        _accountService.Setup(m => m.Get(It.IsAny<int>())).Returns(new Account { Username = "MalReynolds", ID = 2 });
+	        _accountService.Setup(m => m.Get(It.IsAny<string>())).Returns(new Account { Username = "Wash", UserRole = "Admin" });
+	        var actionResult = _accountController.RentalHistory(2);
+	        var conNegResult = actionResult as OkNegotiatedContentResult<IEnumerable<AccountMovie>>;
+	        Assert.IsNotNull(conNegResult);
+	        Assert.IsNotNull(conNegResult.Content);
+	    }
+
+	    [Test]
+	    public void RentalHistoryFailSecurity()
+	    {
+	        _accountController.User = new GenericPrincipal(new GenericIdentity("River", "User"), new[] { "User" });
+	        _accountService.Setup(m => m.Get(It.IsAny<string>())).Returns(new Account { Username = "River", UserRole = "User", ID = 5 });
+	        _accountService.Setup(m => m.Get(It.IsAny<int>())).Returns(new Account { Username = "MalReynolds", ID = 1 });
+	        var actionResult = _accountController.RentalHistory(1);
+	        Assert.IsNotNull(actionResult as UnauthorizedResult);
+	    }
+
+	    [Test]
+	    public void RentalHistoryFailDbError()
+	    {
+	        _accountService.Setup(m => m.RentalHistory(It.IsAny<int>())).Throws(new Exception("Some message"));
+	        var actionResult = _accountController.RentalHistory(1);
+	        var conNegResult = actionResult as ExceptionResult;
+	        Assert.IsNotNull(conNegResult);
+	        Assert.AreEqual("Error getting history", conNegResult.Exception.Message);
+	    }
 	}
 }

@@ -35,7 +35,7 @@ namespace MovieRental.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				_log.Error($"Error Searching movies: {ex}");
+				_log.Error($"Error searching movies: {ex}");
 				return InternalServerError(new ApplicationException("Error searching movies"));
 			}
 		}

@@ -6,6 +6,7 @@ using MovieRental.Entities.Models;
 using NUnit.Framework;
 using System;
 using System.Data.Entity;
+using System.Linq;
 
 namespace MovieRental.API.Tests.Business.Service
 {
@@ -162,6 +163,13 @@ namespace MovieRental.API.Tests.Business.Service
 	        var ex = Assert.Throws<ArgumentException>(() => _accountService.Return(8, 1));
 	        Assert.AreEqual("No active rental found", ex.Message);
 	        _dataContext.Verify(x => x.SaveChanges(), Times.Never);
+	    }
+
+	    [Test]
+	    public void RentalHistory()
+	    {
+	        var ret = _accountService.RentalHistory(1);
+	        Assert.AreEqual(1, ret.Count());
 	    }
     }
 }

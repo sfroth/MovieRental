@@ -1,9 +1,10 @@
-﻿using System.Web;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Web.Mvc;
 
 namespace MovieRental.API
 {
-	public class FilterConfig
+    [ExcludeFromCodeCoverage]
+    public class FilterConfig
 	{
 		public static void RegisterGlobalFilters(GlobalFilterCollection filters)
 		{

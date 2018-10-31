@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Web.Mvc;
 using System.Web.Routing;
 
 namespace MovieRental.API
 {
-	public class RouteConfig
+    [ExcludeFromCodeCoverage]
+    public class RouteConfig
 	{
 		public static void RegisterRoutes(RouteCollection routes)
 		{

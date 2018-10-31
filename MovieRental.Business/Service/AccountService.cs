@@ -143,5 +143,14 @@ namespace MovieRental.Business.Service
 
             _context.SaveChanges();
         }
+
+	    /// <summary>
+	    /// Get Rental History
+	    /// </summary>
+	    /// <param name="accountId"></param>
+	    public IEnumerable<AccountMovie> RentalHistory(int accountId)
+	    {
+	        return _context.AccountMovies.Where(am => am.Account.ID == accountId);
+	    }
     }
 }
