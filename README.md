@@ -1,6 +1,6 @@
 # MovieRental
 
-A code assessment
+A code assessment challenge: Build an API that will support a movie catalog and rental service (similar to Redbox)
 
 -----
 
@@ -33,3 +33,16 @@ Instructions:
 * UpdateMovie: `curl -d '{"title":"Serenity","releasedate":"2005-09-30"}' -H "Content-Type: application/json" -H "authorization: Bearer {token}" -X PUT "http://localhost:50137/movie/1/"`
 * GetMovie: `curl "http://localhost:50137/movie/1/"`
 * SearchMovies: `curl -d '{"SearchTerm":"ere","releasefrom":"2005-01-01", "releaseto": "2006-01-01"}' -H "Content-Type: application/json" -X POST "http://localhost:50137/movies/"`
+
+### Kiosk
+
+* CreateKiosk: `curl -d '{"name":"Vons","Streetaddress1":"123 Main St","City":"Here","Country":"US","PostalCode":"91701"}' -H "Content-Type: application/json" -H "authorization: Bearer {token}" -X POST "http://localhost:50137/kiosk/"`
+* UpdateKiosk: `curl -d '{"name":"Vons","Streetaddress1":"123 Main St","City":"Here","Country":"US","PostalCode":"91737"}' -H "Content-Type: application/json" -H "authorization: Bearer {token}" -X PUT "http://localhost:50137/kiosk/1/"`
+* GetKiosk: `curl -H "authorization: Bearer {token}" "http://localhost:50137/kiosk/1/"`
+* DeleteKiosk: `curl -H "authorization: Bearer {token}" -X DELETE "http://localhost:50137/kiosk/1/"`
+* GetKiosksNear: `curl -H "authorization: Bearer {token}" "http://localhost:50137/kiosks/?location.PostalCode=91737&distance=10000"`
+* AddMoviesToKiosk: `curl -d '[{"MovieID":1,"stock":5}]' -H "Content-Type: application/json" -H "authorization: Bearer {token}" -X POST "http://localhost:50137/kiosk/1/addmovies"`
+* RemoveMoviesFromKiosk: `curl -d '[{"MovieID":1,"stock":1}]' -H "Content-Type: application/json" -H "authorization: Bearer {token}" -X POST "http://localhost:50137/kiosk/1/removemovies"`
+* GetMoviesAtKiosk: `curl -H "authorization: Bearer {token}" "http://localhost:50137/kiosk/1/movies/"`
+* RentMovie: `curl -d '' -H "authorization: Bearer {token}" -X POST "http://localhost:50137/kiosk/1/rent/1/"`
+* ReturnMovie: `curl -d '' -H "authorization: Bearer {token}" -X POST "http://localhost:50137/kiosk/1/return/1/"`
