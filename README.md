@@ -12,6 +12,8 @@ Instructions:
 * Run project
 * Use cURL or any rest client to run methods
 
+If redis cache server is available, the host can be added to Web.Config in the CacheHost key. If no server is available, delete the cache host value. The system will automatically skip caching if that is blank.
+
 -----
 
 ## Commands
@@ -46,3 +48,12 @@ Instructions:
 * GetMoviesAtKiosk: `curl -H "authorization: Bearer {token}" "http://localhost:50137/kiosk/1/movies/"`
 * RentMovie: `curl -d '' -H "authorization: Bearer {token}" -X POST "http://localhost:50137/kiosk/1/rent/1/"`
 * ReturnMovie: `curl -d '' -H "authorization: Bearer {token}" -X POST "http://localhost:50137/kiosk/1/return/1/"`
+
+## Areas for Future Enhancement
+
+* Password encryption (location noted in AccountService.cs)
+* Analysis for caching - determine what ideal cache TTLs are
+* Enhanced movie details - descriptions, thumbnails, director(s), actors, etc
+* Enhanced movie search, but with a better search engine, and using the above details
+* Enhanced geolocation - current geolocation is based on zip code, but a simple change in Account.cs would allow for better geocoding
+* Much, much more
