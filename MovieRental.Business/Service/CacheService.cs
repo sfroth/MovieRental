@@ -11,7 +11,7 @@ namespace MovieRental.Business.Service
 
 		private readonly ILog _log = LogManager.GetLogger("MovieRental");
 
-		public CacheService(ICacheClient client)
+		public CacheService(ICacheClient client = null)
 		{
 			if (client == null)
 			{

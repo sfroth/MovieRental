@@ -29,7 +29,10 @@ namespace MovieRental.API
 			builder.RegisterType<AccountService>().As<IAccountService>();
 			builder.RegisterType<KioskService>().As<IKioskService>();
 			builder.RegisterType<CacheService>().As<ICacheService>();
-			builder.RegisterType<StackExchangeRedisCacheClient>().As<ICacheClient>().WithParameters(new[] { new NamedParameter("serializer", new NewtonsoftSerializer()), new NamedParameter("connectionString", Config.CacheHost) });
+			if (!string.IsNullOrEmpty(Config.CacheHost))
+			{
+				builder.RegisterType<StackExchangeRedisCacheClient>().As<ICacheClient>().WithParameters(new[] { new NamedParameter("serializer", new NewtonsoftSerializer()), new NamedParameter("connectionString", Config.CacheHost) });
+			}
 
 			var container = builder.Build();
 			GlobalConfiguration.Configuration.DependencyResolver = new AutofacWebApiDependencyResolver(container);
