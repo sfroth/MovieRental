@@ -17,8 +17,6 @@ Instructions:
 ## Commands
 ### Account
 
-Create
-
 * CreateAccount `curl -d '{"username":"next","password":"user"}' -H "Content-Type: application/json" -X POST "http://localhost:50137/account/"`
 * Login: `curl -d "username=joe&password=user&grant_type=password" -X POST http://localhost:50137/token`
   - Get the access token from this for all other commands
@@ -27,4 +25,11 @@ Create
   - Get Other user (admin only): `curl -H "authorization: Bearer {token}" "http://localhost:50137/account/2/"`
 * UpdateAccount: Optional id as above: `curl -d '{"username":"next", "password":"user", "userrole": "Admin"}' -H "Content-Type: application/json" -X PUT -H "authorization: Bearer {token}" "http://localhost:50137/account/2/"`
 * DeleteAccount (deactivate): Optional id as above: `curl -X DELETE -H "authorization: Bearer {token}" "http://localhost:50137/account/2/"`
-* RentalHistory: Optional id as above: `curl -H "authorization: Bearer {token}" "http://localhost:50137/account/1/history"`
+* RentalHistory: Optional id as above: `curl -H "authorization: Bearer {token}" "http://localhost:50137/account/1/history/"`
+
+### Movie
+
+* CreateMovie: `curl -d '{"title":"Serenity","releasedate":"2005-09-01"}' -H "Content-Type: application/json" -H "authorization: Bearer {token}" -X POST "http://localhost:50137/movie/"`
+* UpdateMovie: `curl -d '{"title":"Serenity","releasedate":"2005-09-30"}' -H "Content-Type: application/json" -H "authorization: Bearer {token}" -X PUT "http://localhost:50137/movie/1/"`
+* GetMovie: `curl "http://localhost:50137/movie/1/"`
+* SearchMovies: `curl -d '{"SearchTerm":"ere","releasefrom":"2005-01-01", "releaseto": "2006-01-01"}' -H "Content-Type: application/json" -X POST "http://localhost:50137/movies/"`
